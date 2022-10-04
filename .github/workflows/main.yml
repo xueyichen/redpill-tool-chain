@@ -29,10 +29,10 @@ jobs:
           #  version: 7.1.0-42661
 
     steps:
-      - name: 检出项目文件
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: 缓存加速
+      - name: Cached
         uses: actions/cache@v3
         with:
           path: |
@@ -53,14 +53,14 @@ jobs:
         run: |
           ./redpill_tool_chain.sh build ${{matrix.platform}}-${{matrix.version}}
 
-      - name: 配置引导镜像
+      - name: Configuration
         run: |
           cp sample_user_config.json ${{matrix.platform}}_user_config.json
-          ./redpill_tool_chain.sh sn ${{matrix.platform}}
-
-          # 调整SN和MAC,最好使用 actions secrets 引入,SN应该是固定值不应该每次生成
-          sn=`./redpill_tool_chain.sh sn ${{matrix.platform}} | grep 'Serial Number' | awk '{print $3}'`
-          sed -i -e "s/1234XXX123/${sn:="1130LWN123456"}/g" -e 's/XXYYXXYYXXYY/0011323D47F7/g' ${{matrix.platform}}_user_config.json
+          ./redpill_tool_chain.sh sn ${{matrix.platform}} > info
+          sn=`cat info | grep 'Serial Number' | awk '{print $3}'`
+          mac=`cat info | grep 'Mac Address:' | awk '{print $3}'`
+          sed  "s/\"sn\": \"1780PDN234502\"/\"sn\": \"$sn\"/g" ${{matrix.platform}}_user_config.json > ${{matrix.platform}}_user_config.json
+          sed  "s/\"mac1\": \"0011235B0CD6\"/\"mac1\": \"$mac\"/g" ${{matrix.platform}}_user_config.json > ${{matrix.platform}}_user_config.json
 
           cat ${{matrix.platform}}_user_config.json
 
