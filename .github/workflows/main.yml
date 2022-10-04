@@ -57,10 +57,12 @@ jobs:
         run: |
           cp sample_user_config.json ${{matrix.platform}}_user_config.json
           ./redpill_tool_chain.sh sn ${{matrix.platform}} > info
+          cat info
           sn=`cat info | grep 'Serial Number' | awk '{print $3}'`
           mac=`cat info | grep 'Mac Address:' | awk '{print $3}'`
-          sed  "s/\"sn\": \"1780PDN234502\"/\"sn\": \"$sn\"/g" ${{matrix.platform}}_user_config.json > ${{matrix.platform}}_user_config.json
-          sed  "s/\"mac1\": \"0011235B0CD6\"/\"mac1\": \"$mac\"/g" ${{matrix.platform}}_user_config.json > ${{matrix.platform}}_user_config.json
+          echo $sn" "$mac
+          sed -i -e "s/\"sn\": \"1780PDN234502\"/\"sn\": \"$sn\"/g" ${{matrix.platform}}_user_config.json > ${{matrix.platform}}_user_config.json
+          sed -i -e "s/\"mac1\": \"0011235B0CD6\"/\"mac1\": \"$mac\"/g" ${{matrix.platform}}_user_config.json > ${{matrix.platform}}_user_config.json
 
           cat ${{matrix.platform}}_user_config.json
 
