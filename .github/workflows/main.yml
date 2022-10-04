@@ -61,12 +61,8 @@ jobs:
           sn=`cat info | grep 'Serial Number' | awk '{print $3}'`
           mac=`cat info | grep 'Mac Address:' | awk '{print $3}'`
           echo $sn" "$mac
-          sed -i "s/\"sn\": \"1780PDN234502\"/\"sn\": \"$sn\"/g" ${{matrix.platform}}_user_config.json > tmp.json
-          cat tmp.json
-          sed -i "s/\"mac1\": \"0011235B0CD6\"/\"mac1\": \"$mac\"/g" tmp.json > user_config.json
-
-          cat user_config.json
-          cat user_config.json > ${{matrix.platform}}_user_config.json
+          sed -i "s/\"sn\": \"1780PDN234502\"/\"sn\": \"$sn\"/g" ${{matrix.platform}}_user_config.json
+          sed -i "s/\"mac1\": \"0011235B0CD6\"/\"mac1\": \"$mac\"/g" ${{matrix.platform}}_user_config.json
           cat ${{matrix.platform}}_user_config.json
 
       - name: Add extensions
